@@ -1,0 +1,148 @@
+import {Play, Settings2} from "lucide-react";
+import { Game } from "@renderer/lib/games";
+import { useState } from "react";
+import DeleteGameModal from "@renderer/modals/DeleteGameModal";
+
+export default function GamePage({ game, onDelete }: { game: Game, onDelete: (id: string) => void }) {
+	const [showSettings, setShowSettings] = useState(false);
+	const [showDeleteGameModal, setShowDeleteGameModal] = useState(false);
+
+	const handleLaunch = () => {
+		console.log("Launching");
+	};
+
+	const handleHideSettings = () => {
+		setShowSettings(false);
+		console.log("Hide Settings");
+	};
+
+	const handleDeleteGame = () => {
+		onDelete(game.id);
+		setShowDeleteGameModal(false);
+	}
+
+	return (
+		<div
+			className="relative w-full h-full flex flex-col justify-between items-center"
+			onClick={handleHideSettings}
+		>
+			<div
+				className="absolute top-0 z-10 flex w-full p-12 flex-row"
+				style={{
+					padding: game.data.logoPosition,
+					flexDirection:
+						game.data.logoPlace === "right" ? "row-reverse" : "row",
+				}}
+			>
+				<img
+					alt={game.name}
+					src={game.data.logo ?? game.icon}
+					width={game.data.logoSize}
+					className="max-w-44 select-none"
+				/>
+			</div>
+
+			<div className="absolute bottom-0 z-10 flex flex-row justify-end items-center w-full pb-20 pr-20 gap-5">
+				<button
+					className="p-3 bg-[#FFDB29] cursor-pointer rounded-4xl group hover:bg-[#212429] transition-all duration-150 ease-linear"
+					onClick={(e) => {
+						e.stopPropagation();
+						handleLaunch();
+					}}
+				>
+					<div className="flex flex-row gap-3 justify-center items-center">
+						<div className="rounded-4xl bg-[#16171A] p-2.5 group-hover:bg-[#FFDB29] transition-all duration-150 ease-linear">
+							<Play
+								color="#FFDB29"
+								size={18}
+								className="group-hover:stroke-[#212429] transition-all duration-150 ease-linear"
+							/>
+						</div>
+						<div className="w-30 font-bold text-lg text-[#16171A] group-hover:text-[#FFDB29] text-center pr-4 transition-all duration-150 ease-linear select-none">
+							Play Now
+						</div>
+					</div>
+				</button>
+
+				<div className="relative">
+					<button
+						className="p-4 bg-[#3C3C3C] group cursor-pointer rounded-4xl hover:bg-[#4A4A4A] transition-all duration-150"
+						onClick={(e) => {
+							e.stopPropagation();
+							setShowSettings(!showSettings);
+						}}
+					>
+						<Settings2
+							color="#A7A7A7"
+							size={24}
+							className="group-hover:stroke-[#FFFFFF] transition-all ease-linear duration-150"
+						/>
+					</button>
+
+					<div
+						className={`
+							absolute bottom-full right-0 mb-2 min-w-48 bg-[#2A2B2F]
+							rounded-3xl shadow-xl border border-[#3C3C3C] overflow-hidden
+							transition-all duration-200 ease-out origin-bottom
+							${
+								showSettings
+									? "opacity-100 translate-y-0 scale-100 pointer-events-auto"
+									: "opacity-0 translate-y-2 scale-95 pointer-events-none"
+							}
+						`}
+						onClick={(e) => {
+							e.stopPropagation();
+						}}
+					>
+						<div className="p-3 flex flex-col gap-3 justify-around items-start">
+							<h3 className="font-semibold text-lg select-none pl-2 text-[#FFFFFF]">
+								{game.name}
+							</h3>
+							{game.data.playedTime && (
+								<span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-400 mr-2 mb-2">
+									{formatDuration(game.data.playedTime)}
+								</span>
+							)}
+							<div className="border-t-2 border-gray-700/50 h-0 w-full rounded-lg" />
+							<button
+								onClick={() => setShowDeleteGameModal(true)}
+								className="cursor-pointer px-4 py-2 bg-red-500 hover:bg-red-700 text-[#FFFFFF] rounded-xl transition-colors ease-linear duration-150 w-full"
+							>
+								Delete
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div className="absolute top-0 left-0 h-full bg-linear-to-r from-[#030712] to-transparent w-[20%] z-5" />
+
+			<div className="absolute top-0 left-0 w-full h-full">
+				{game.data.bgType === "image" ? (
+					<img
+						alt=""
+						src={game.data.bg}
+						className="overflow-hidden object-cover h-full w-full"
+					/>
+				) : game.data.bgType === "video" ? (
+					<video
+						src={game.data.bg}
+						autoPlay
+						loop
+						preload="auto"
+						controls={false}
+						controlsList="nodownload nofullscreen"
+						className="overflow-hidden object-cover h-full w-full"
+					/>
+				) : null}
+			</div>
+
+			<DeleteGameModal
+				show={showDeleteGameModal}
+				setShow={setShowDeleteGameModal}
+				game={game}
+				onDelete={handleDeleteGame}
+			/>
+		</div>
+	);
+}
