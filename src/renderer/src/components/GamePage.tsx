@@ -2,6 +2,7 @@ import {Play, Settings2} from "lucide-react";
 import { Game } from "@renderer/lib/games";
 import { useState } from "react";
 import DeleteGameModal from "@renderer/modals/DeleteGameModal";
+import { formatDuration } from "@renderer/lib/utils";
 
 export default function GamePage({ game, onDelete }: { game: Game, onDelete: (id: string) => void }) {
 	const [showSettings, setShowSettings] = useState(false);
@@ -42,9 +43,9 @@ export default function GamePage({ game, onDelete }: { game: Game, onDelete: (id
 				/>
 			</div>
 
-			<div className="absolute bottom-0 z-10 flex flex-row justify-end items-center w-full pb-20 pr-20 gap-5">
+			<div className="absolute bottom-0 z-10 flex flex-row justify-end items-center w-full pr-20 gap-5">
 				<button
-					className="p-3 bg-[#FFDB29] cursor-pointer rounded-4xl group hover:bg-[#212429] transition-all duration-150 ease-linear"
+					className="animate-from-bottom-appear p-3 bg-[#FFDB29] cursor-pointer rounded-4xl group hover:bg-[#212429] transition-all duration-150 ease-linear"
 					onClick={(e) => {
 						e.stopPropagation();
 						handleLaunch();
@@ -64,7 +65,7 @@ export default function GamePage({ game, onDelete }: { game: Game, onDelete: (id
 					</div>
 				</button>
 
-				<div className="relative">
+				<div className="relative animate-from-bottom-appear">
 					<button
 						className="p-4 bg-[#3C3C3C] group cursor-pointer rounded-4xl hover:bg-[#4A4A4A] transition-all duration-150"
 						onClick={(e) => {
@@ -95,15 +96,17 @@ export default function GamePage({ game, onDelete }: { game: Game, onDelete: (id
 						}}
 					>
 						<div className="p-3 flex flex-col gap-3 justify-around items-start">
-							<h3 className="font-semibold text-lg select-none pl-2 text-[#FFFFFF]">
-								{game.name}
-							</h3>
-							{game.data.playedTime && (
-								<span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-400 mr-2 mb-2">
-									{formatDuration(game.data.playedTime)}
-								</span>
-							)}
-							<div className="border-t-2 border-gray-700/50 h-0 w-full rounded-lg" />
+							<div className="flex flex-row gap-3 justify-between items-center w-full">
+								<h3 className="font-semibold text-lg select-none pl-2 text-[#FFFFFF]">
+									{game.name}
+								</h3>
+								{game.data.playedTime !== undefined ? (
+									<span className="translate-y-1 bg-gray-700/70 rounded-full px-3 py-1 text-sm font-semibold text-gray-400 mr-2 mb-2 select-none">
+										{formatDuration(game.data.playedTime)}
+									</span>
+								) : null}
+							</div>
+							<div className="border-t-2 border-gray-500/50 h-0 w-full rounded-lg" />
 							<button
 								onClick={() => setShowDeleteGameModal(true)}
 								className="cursor-pointer px-4 py-2 bg-red-500 hover:bg-red-700 text-[#FFFFFF] rounded-xl transition-colors ease-linear duration-150 w-full"

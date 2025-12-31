@@ -9,3 +9,20 @@
     app-region: no-drag;
     -webkit-app-region: no-drag;
 }
+
+.animate-from-bottom-appear {
+    animation: animate-from-bottom-appear 300ms forwards;
+    transform-origin: bottom center;
+    margin-bottom: 4rem;
+}
+
+@keyframes animate-from-bottom-appear {
+    0% {
+        scale: 0.9;
+        margin-bottom: 4rem;
+    }
+    100% {
+        scale: 1;
+        margin-bottom: 6rem;
+    }
+}

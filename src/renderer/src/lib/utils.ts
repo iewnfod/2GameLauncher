@@ -1,4 +1,4 @@
-function formatDuration(milliseconds: number) {
+export function formatDuration(milliseconds: number) {
 	let totalSeconds = Math.floor(milliseconds / 1000);
 
 	let seconds = totalSeconds % 60;
