@@ -99,6 +99,14 @@ function App() {
 				const next = newState[index + 1];
 				if (next) {
 					handleSelectGame(next.id);
+				} else {
+					const last = newState[index - 1];
+					if (last) {
+						handleSelectGame(last.id);
+					} else {
+						setCurrentGame(null);
+						setSelectedGameId(null);
+					}
 				}
 				newState.splice(index, 1);
 				return newState;
