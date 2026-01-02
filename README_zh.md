@@ -4,6 +4,13 @@
 中文 | <a href="./README.md">English</a>
 </p>
 
+## 项目展示
+### Home Page
+![homepage](./img/homepage-zh.png)
+
+### Game Page
+![ww](./img/ww-zh.png)
+
 ## 项目配置
 ### 安装
 ```bash
