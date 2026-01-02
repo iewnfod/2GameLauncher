@@ -24,6 +24,7 @@
     "@electron-toolkit/preload": "^3.0.2",
     "@electron-toolkit/utils": "^4.0.0",
     "@tailwindcss/vite": "^4.1.18",
+    "electron-is-dev": "^3.0.1",
     "electron-store": "^11.0.2",
     "electron-updater": "^6.3.9",
     "lucide-react": "^0.562.0",

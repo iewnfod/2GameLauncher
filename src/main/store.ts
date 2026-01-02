@@ -1,22 +1,32 @@
+import isDev from "electron-is-dev";
+
 const Store = require("electron-store").default;
 import { ipcMain } from "electron";
 
 const store = new Store();
 
+function getKey(key: string) {
+	if (isDev) {
+		return `dev.${key}`;
+	} else {
+		return key;
+	}
+}
+
 export function storeSet(key: string, value: any) {
-	store.set(key, value);
+	store.set(getKey(key), value);
 }
 
 export async function storeGet(key: string) {
-	return await store.get(key);
+	return await store.get(getKey(key));
 }
 
 export function storeDelete(key: string) {
-	store.delete(key);
+	store.delete(getKey(key));
 }
 
 export function storeHas(key: string) {
-	return store.has(key);
+	return store.has(getKey(key));
 }
 
 export function loadStoreEvent() {
