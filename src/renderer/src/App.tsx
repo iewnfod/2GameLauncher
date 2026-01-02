@@ -1,7 +1,7 @@
 import SideBar from "./components/SideBar";
 import GamePage from "./components/GamePage";
 import {useCallback, useEffect, useState} from "react";
-import {Game} from "./lib/games";
+import {Game, GameData } from "./lib/games";
 import HeadLine from "@renderer/components/HeadLine";
 import WelcomePage from "@renderer/components/WelcomePage";
 import NewGameModal from "@renderer/modals/NewGameModal";
@@ -164,6 +164,22 @@ function App() {
 		});
 	};
 
+	const handleUpdateGameData = (id: string, data: Partial<GameData>) => {
+		setGamesData(prevState => {
+			const index = prevState.findIndex(g => g.id === id);
+			if (index !== -1) {
+				const newState = [...prevState];
+				newState[index].data = {
+					...newState[index].data,
+					...data
+				};
+				return newState;
+			} else {
+				return prevState;
+			}
+		});
+	};
+
 	return (
 		<div className="w-full h-full flex flex-row items-center justify-between">
 			<HeadLine/>
@@ -179,6 +195,7 @@ function App() {
 					<GamePage
 						game={currentGame}
 						onDelete={handleDeleteGame}
+						updateGameData={handleUpdateGameData}
 					/>
 				) : (
 					<WelcomePage

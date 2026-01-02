@@ -1,13 +1,18 @@
-import {Play, Settings2} from "lucide-react";
-import { Game } from "@renderer/lib/games";
+import { BookSearch, Play, Settings2, Trash } from "lucide-react";
+import { Game, GameData } from "@renderer/lib/games";
 import { useState } from "react";
 import DeleteGameModal from "@renderer/modals/DeleteGameModal";
 import { formatDuration } from "@renderer/lib/utils";
 import { useI18n } from "@renderer/components/i18n";
+import GameDetailsModal from "@renderer/modals/GameDetailsModal";
 
-export default function GamePage({ game, onDelete }: { game: Game, onDelete: (id: string) => void }) {
+export default function GamePage({ game, onDelete, updateGameData }: {
+	game: Game, onDelete: (id: string) => void,
+	updateGameData: (id: string, data: Partial<GameData>) => void,
+}) {
 	const [showSettings, setShowSettings] = useState(false);
 	const [showDeleteGameModal, setShowDeleteGameModal] = useState(false);
+	const [showDetailsModal, setShowDetailsModal] = useState(false);
 	const {t} = useI18n();
 
 	const handleLaunch = () => {
@@ -22,6 +27,10 @@ export default function GamePage({ game, onDelete }: { game: Game, onDelete: (id
 	const handleDeleteGame = () => {
 		onDelete(game.id);
 		setShowDeleteGameModal(false);
+	};
+
+	const handleShowDetails = () => {
+		setShowDetailsModal(true);
 	}
 
 	return (
@@ -108,13 +117,26 @@ export default function GamePage({ game, onDelete }: { game: Game, onDelete: (id
 									</span>
 								) : null}
 							</div>
+
 							<div className="border-t-2 border-gray-500/50 h-0 w-full rounded-lg" />
-							<button
-								onClick={() => setShowDeleteGameModal(true)}
-								className="cursor-pointer px-4 py-2 bg-red-500 hover:bg-red-700 text-[#FFFFFF] rounded-xl transition-colors ease-linear duration-150 w-full"
-							>
-								{t('Delete')}
-							</button>
+
+							<div className="flex flex-col w-full items-center justify-start space-y-1">
+								<button
+									onClick={handleShowDetails}
+									className="flex flex-row items-center space-x-2 cursor-pointer px-3 py-2 hover:bg-gray-700 text-[#FFFFFF] rounded-xl transition-colors ease-linear duration-150 w-full"
+								>
+									<BookSearch size={16} />
+									<p>{t("Details")}</p>
+								</button>
+
+								<button
+									onClick={() => setShowDeleteGameModal(true)}
+									className="flex flex-row items-center space-x-2 cursor-pointer px-3 py-2 text-red-400 hover:bg-red-700 hover:text-[#FFFFFF] rounded-xl transition-colors ease-linear duration-150 w-full"
+								>
+									<Trash size={16} />
+									<p>{t("Delete")}</p>
+								</button>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -147,6 +169,13 @@ export default function GamePage({ game, onDelete }: { game: Game, onDelete: (id
 				setShow={setShowDeleteGameModal}
 				game={game}
 				onDelete={handleDeleteGame}
+			/>
+
+			<GameDetailsModal
+				show={showDetailsModal}
+				setShow={setShowDetailsModal}
+				game={game}
+				updateGameData={updateGameData}
 			/>
 		</div>
 	);

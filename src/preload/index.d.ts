@@ -10,6 +10,8 @@ declare global {
 			minimize: () => void,
 			close: () => void,
 			selectFile: (filters: { name: string; extensions: string[] }[]) => Promise<string>,
+			showFileInFolder: (filePath: string) => void,
+			getFileName: (filePath: string) => string,
 		},
 		store: {
 			set: (key: string, value: any) => void,

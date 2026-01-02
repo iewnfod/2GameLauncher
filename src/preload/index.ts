@@ -1,14 +1,19 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import path from "node:path";
 
 const api = {
 	fetchBgUrl: (websiteUrl: string, gameId: string) =>
 		ipcRenderer.invoke("fetch-bg-url", { websiteUrl, gameId }),
-	onUpdateBgUrl: (callback: (args: {url: string, gameId: string}) => void) =>
-		ipcRenderer.on("update-bg-url", (_event, value) => callback(value)),
+	onUpdateBgUrl: (
+		callback: (args: { url: string; gameId: string }) => void,
+	) => ipcRenderer.on("update-bg-url", (_event, value) => callback(value)),
 	minimize: () => ipcRenderer.invoke("minimize"),
 	close: () => ipcRenderer.invoke("close"),
-	selectFile: (filters: { name: string; extensions: string[] }[]) => ipcRenderer.invoke("selectFile", { filters }),
+	selectFile: (filters: { name: string; extensions: string[] }[]) =>
+		ipcRenderer.invoke("selectFile", { filters }),
+	showFileInFolder: (filePath: string) => ipcRenderer.invoke("showFileInFolder", { filePath }),
+	getFileName: (filePath: string) => path.basename(filePath),
 };
 
 const storeAPI = {

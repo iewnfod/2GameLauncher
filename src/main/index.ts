@@ -97,6 +97,10 @@ app.whenReady().then(() => {
 		},
 	);
 
+	ipcMain.handle("showFileInFolder", (_event, args: { filePath: string }) => {
+		shell.showItemInFolder(args.filePath);
+	});
+
 	loadStoreEvent();
 
 	createWindow();
