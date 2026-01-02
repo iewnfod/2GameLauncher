@@ -16,12 +16,15 @@ export default function GamePage({ game, onDelete, updateGameData }: {
 	const {t} = useI18n();
 
 	const handleLaunch = () => {
-		console.log("Launching");
+		console.log(`Trying to launch game ${game.id}`);
+		window.api.launchGame(game.id, game.data.gamePath, game.data.gameParams);
+		updateGameData(game.id, {
+			lastOpen: Date.now(),
+		});
 	};
 
 	const handleHideSettings = () => {
 		setShowSettings(false);
-		console.log("Hide Settings");
 	};
 
 	const handleDeleteGame = () => {

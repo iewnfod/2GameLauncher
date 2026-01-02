@@ -14,6 +14,13 @@ const api = {
 		ipcRenderer.invoke("selectFile", { filters }),
 	showFileInFolder: (filePath: string) => ipcRenderer.invoke("showFileInFolder", { filePath }),
 	getFileName: (filePath: string) => path.basename(filePath),
+	launchGame: (gameId: string, gamePath: string, gameParams?: string) => ipcRenderer.invoke("launchGame", { gameId, gamePath, gameParams }),
+	onGameExit: (
+		callback: (args: { gameId: string, code: number | null }) => void,
+	) => ipcRenderer.on("game-exit", (_event, value) => callback(value)),
+	onGameLaunchError: (
+		callback: (args: { gameId: string, msg: string }) => void,
+	) => ipcRenderer.on("game-launch-error", (_event, value) => callback(value)),
 };
 
 const storeAPI = {

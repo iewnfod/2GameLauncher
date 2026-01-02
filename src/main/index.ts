@@ -1,8 +1,10 @@
-import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
+import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { loadStoreEvent } from "./store";
+import { loadLaunchGameEvents } from "./launch";
+import { loadFileEvents } from "./file";
 
 function createWindow(): void {
 	const mainWindow = new BrowserWindow({
@@ -67,6 +69,8 @@ function createWindow(): void {
 	ipcMain.handle("close", () => {
 		mainWindow.close();
 	});
+
+	loadLaunchGameEvents(mainWindow);
 }
 
 app.whenReady().then(() => {
@@ -76,30 +80,7 @@ app.whenReady().then(() => {
 		optimizer.watchWindowShortcuts(window);
 	});
 
-	ipcMain.handle(
-		"selectFile",
-		async (
-			_event,
-			args: {
-				filters: { name: string; extensions: string[] }[];
-			},
-		) => {
-			const { canceled, filePaths } = await dialog.showOpenDialog({
-				properties: ["openFile"],
-				filters: args.filters,
-			});
-
-			if (!canceled) {
-				return filePaths[0];
-			} else {
-				return "";
-			}
-		},
-	);
-
-	ipcMain.handle("showFileInFolder", (_event, args: { filePath: string }) => {
-		shell.showItemInFolder(args.filePath);
-	});
+	loadFileEvents();
 
 	loadStoreEvent();
 

@@ -1,5 +1,5 @@
-appId: com.electron.app
-productName: 2gamelauncher
+appId: com.iewnfod.2gamelauncher
+productName: 2GameLauncher
 directories:
   buildResources: build
 files:
@@ -12,7 +12,8 @@ files:
 asarUnpack:
   - resources/**
 win:
-  executableName: 2gamelauncher
+  executableName: 2GameLauncher
+  requestedExecutionLevel: requireAdministrator
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}

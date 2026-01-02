@@ -54,11 +54,37 @@ function App() {
 		}
 	}, [gamesData]);
 
+	const handleGameExit = useCallback((gameId: string) => {
+		setGamesData(prevState => {
+			const index = prevState.findIndex(g => g.id === gameId);
+			if (index !== -1) {
+				const newState = [...prevState];
+				const now = Date.now();
+				const escapedTime = now - (newState[index].data.lastOpen ?? now);
+				if (newState[index].data.playedTime) {
+					newState[index].data.playedTime += escapedTime;
+				} else {
+					newState[index].data.playedTime = escapedTime;
+				}
+				newState[index].data.lastOpen = now;
+				return newState;
+			} else {
+				return prevState;
+			}
+		});
+	}, [gamesData]);
+
 	useEffect(() => {
 		window.api.onUpdateBgUrl((args) => {
 			if (args.url) {
 				updateBgVideoUrl(args.url, args.gameId);
 			}
+		});
+		window.api.onGameExit((args) => {
+			handleGameExit(args.gameId);
+		});
+		window.api.onGameLaunchError((args) => {
+			console.error(args.gameId, args.msg);
 		});
 	}, [updateBgVideoUrl]);
 

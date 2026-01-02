@@ -12,6 +12,9 @@ declare global {
 			selectFile: (filters: { name: string; extensions: string[] }[]) => Promise<string>,
 			showFileInFolder: (filePath: string) => void,
 			getFileName: (filePath: string) => string,
+			launchGame: (gameId: string, gamePath: string, gameParams?: string) => void,
+			onGameExit: (callback: (args: {gameId: string, code: number | null}) => void) => void,
+			onGameLaunchError: (callback: (args: { gameId: string, msg: string }) => void) => void,
 		},
 		store: {
 			set: (key: string, value: any) => void,
