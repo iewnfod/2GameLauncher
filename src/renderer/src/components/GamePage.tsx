@@ -3,10 +3,12 @@ import { Game } from "@renderer/lib/games";
 import { useState } from "react";
 import DeleteGameModal from "@renderer/modals/DeleteGameModal";
 import { formatDuration } from "@renderer/lib/utils";
+import { useI18n } from "@renderer/components/i18n";
 
 export default function GamePage({ game, onDelete }: { game: Game, onDelete: (id: string) => void }) {
 	const [showSettings, setShowSettings] = useState(false);
 	const [showDeleteGameModal, setShowDeleteGameModal] = useState(false);
+	const {t} = useI18n();
 
 	const handleLaunch = () => {
 		console.log("Launching");
@@ -60,7 +62,7 @@ export default function GamePage({ game, onDelete }: { game: Game, onDelete: (id
 							/>
 						</div>
 						<div className="w-30 font-bold text-lg text-[#16171A] group-hover:text-[#FFDB29] text-center pr-4 transition-all duration-150 ease-linear select-none">
-							Play Now
+							{t("Play Now")}
 						</div>
 					</div>
 				</button>
@@ -111,7 +113,7 @@ export default function GamePage({ game, onDelete }: { game: Game, onDelete: (id
 								onClick={() => setShowDeleteGameModal(true)}
 								className="cursor-pointer px-4 py-2 bg-red-500 hover:bg-red-700 text-[#FFFFFF] rounded-xl transition-colors ease-linear duration-150 w-full"
 							>
-								Delete
+								{t('Delete')}
 							</button>
 						</div>
 					</div>

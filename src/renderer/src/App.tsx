@@ -5,13 +5,21 @@ import {Game} from "./lib/games";
 import HeadLine from "@renderer/components/HeadLine";
 import WelcomePage from "@renderer/components/WelcomePage";
 import NewGameModal from "@renderer/modals/NewGameModal";
+import SettingsModal from "@renderer/modals/SettingsModal";
+import { DEFAULT_SETTINGS, Settings } from "@renderer/lib/settings";
+import { useI18n } from "@renderer/components/i18n";
+import { translations } from "@renderer/lib/translation";
 
 function App() {
+	const {changeLanguage} = useI18n();
 	const [gamesData, setGamesData] = useState<Game[]>([]);
 	const [currentGame, setCurrentGame] = useState<Game | null>(null);
 	const [selectedGameId, setSelectedGameId] = useState<string | null>(null);
 	const [showNewGameModal, setShowNewGameModal] = useState(false);
 	const [isGameDataLoaded, setIsGameDataLoaded] = useState<boolean>(false);
+	const [showSettingsModal, setShowSettingsModal] = useState<boolean>(false);
+	const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
+	const [isSettingsLoaded, setIsSettingsLoaded] = useState(false);
 
 	const handleSelectGame = useCallback(
 		(gameId: string) => {
@@ -55,15 +63,31 @@ function App() {
 	}, [updateBgVideoUrl]);
 
 	useEffect(() => {
-		window.store.get("games").then((data: string) => {
-			if (data) {
-				setGamesData(JSON.parse(data) ?? gamesData);
-			}
-			setIsGameDataLoaded(true);
-		}).catch((e) => {
-			console.error(e);
-			setIsGameDataLoaded(true);
-		});
+		window.store
+			.get("games")
+			.then((data: string) => {
+				if (data) {
+					setGamesData(JSON.parse(data) ?? gamesData);
+				}
+				setIsGameDataLoaded(true);
+			})
+			.catch((e) => {
+				console.error(e);
+				setIsGameDataLoaded(true);
+			});
+
+		window.store
+			.get("settings")
+			.then((data: string) => {
+				if (data) {
+					setSettings(JSON.parse(data) ?? settings);
+				}
+				setIsSettingsLoaded(true);
+			})
+			.catch((e) => {
+				console.error(e);
+				setIsSettingsLoaded(true);
+			});
 	}, []);
 
 	useEffect(() => {
@@ -78,8 +102,23 @@ function App() {
 		}
 	}, [gamesData, isGameDataLoaded]);
 
+	useEffect(() => {
+		if (isSettingsLoaded) {
+			console.log("save settings");
+			if (settings.langauge && Object.keys(translations).includes(settings.langauge)) {
+				// @ts-ignore settings.language must be key of translations
+				changeLanguage(settings.langauge);
+			}
+			window.store.set("settings", JSON.stringify(settings));
+		}
+	}, [settings, isSettingsLoaded]);
+
 	const handleOpenNewGameModal = () => {
 		setShowNewGameModal(true);
+	};
+
+	const handleOpenSettingsModal = () => {
+		setShowSettingsModal(true);
 	};
 
 	const handleNewGame = (game: Game) => {
@@ -116,10 +155,25 @@ function App() {
 		});
 	};
 
+	const handleUpdateSettings = (changes: Partial<Settings>) => {
+		setSettings(prevState => {
+			return {
+				...prevState,
+				...changes
+			};
+		});
+	};
+
 	return (
 		<div className="w-full h-full flex flex-row items-center justify-between">
 			<HeadLine/>
-			<SideBar openNewGameModal={handleOpenNewGameModal} games={gamesData} selectedId={selectedGameId ?? ""} setSelectedId={handleSelectGame}/>
+			<SideBar
+				openSettingsModal={handleOpenSettingsModal}
+				openNewGameModal={handleOpenNewGameModal}
+				games={gamesData}
+				selectedId={selectedGameId ?? ""}
+				setSelectedId={handleSelectGame}
+			/>
 			<div className="grow bg-[#030712] w-full h-full">
 				{currentGame ? (
 					<GamePage
@@ -135,6 +189,12 @@ function App() {
 				)}
 			</div>
 			<NewGameModal show={showNewGameModal} setShow={setShowNewGameModal} onNewGame={handleNewGame}/>
+			<SettingsModal
+				show={showSettingsModal}
+				setShow={setShowSettingsModal}
+				settings={settings}
+				updateSettings={handleUpdateSettings}
+			/>
 		</div>
 	);
 }

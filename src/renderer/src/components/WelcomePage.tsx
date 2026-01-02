@@ -1,6 +1,7 @@
 import { Grid2X2Plus } from "lucide-react";
 import { Game } from "@renderer/lib/games";
 import { useMemo } from "react";
+import { useI18n } from "@renderer/components/i18n";
 
 export default function WelcomePage({
 	openNewGameModal,
@@ -11,6 +12,8 @@ export default function WelcomePage({
 	games: Game[];
 	handleSelectGame: (gameId: string) => void;
 }) {
+	const {t} = useI18n();
+
 	// first 5 longest play time
 	const first5Games = useMemo(() => {
 		games.sort((a, b) => {
@@ -31,14 +34,14 @@ export default function WelcomePage({
 		<div className="relative flex h-full w-full items-center justify-center flex-col space-y-5 select-none overflow-hidden">
 			<div className="relative z-10 flex flex-col items-center space-y-5 px-4">
 				<h1 className="text-4xl font-bold text-white text-center">
-					Welcome to{" "}
+					{t("Welcome to")}{" "}
 					<span className="text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-purple-400">
 						2GameLauncher
 					</span>
 				</h1>
 
 				<p className="text-gray-400 text-center max-w-md">
-					Organize and launch all your games from one place
+					{t("Organize and launch all your games from one place")}
 				</p>
 
 				{games.length === 0 ? (
@@ -48,7 +51,7 @@ export default function WelcomePage({
 					>
 						<div className="bg-gray-900 rounded-xl pt-3 pb-3 pl-5 pr-5 flex flex-row items-center justify-center space-x-3">
 							<p className="text-gray-300 text-lg font-medium group-hover:text-white transition-all ease-linear duration-150">
-								Add your first game
+								{t("Add a new game")}
 							</p>
 							<Grid2X2Plus
 								size={22}

@@ -6,6 +6,7 @@ import { useState } from "react";
 import NewMihoyoGameModal from "@renderer/modals/NewMihoyoGameModal";
 import TrueNewGameModal from "@renderer/modals/TrueNewGameModal";
 import { Game, GameData } from "@renderer/lib/games";
+import { useI18n } from "@renderer/components/i18n";
 
 export default function NewGameModal({
 	show,
@@ -16,6 +17,8 @@ export default function NewGameModal({
 	setShow: (show: boolean) => void;
 	onNewGame: (game: Game) => void;
 }) {
+	const {t} = useI18n();
+
 	const [openKuroModal, setOpenKuroModal] = useState(false);
 	const [openMihoyoModal, setOpenMihoyoModal] = useState(false);
 	const [openTrueNewModal, setOpenTrueNewModal] = useState(false);
@@ -66,12 +69,18 @@ export default function NewGameModal({
 						: "opacity-0 scale-95 translate-y-4"
 				}`}
 			>
-				<h3 className="text-xl">New Game</h3>
-				<p className="text-gray-400">Select the game provider</p>
+				<h3 className="text-xl select-none">{t("Add Game")}</h3>
+				<p className="text-gray-400 select-none">
+					{t("Select the game provider")}
+				</p>
 				<div className="flex flex-col items-center justify-center max-h-[50vh] min-h-10 pt-5 pb-5 overflow-y-auto">
-					<GameTypeCard name="米哈游" logo={MihoyoLogo} onClick={() => setOpenMihoyoModal(true)} />
 					<GameTypeCard
-						name="库洛游戏"
+						name={t("miHoYo")}
+						logo={MihoyoLogo}
+						onClick={() => setOpenMihoyoModal(true)}
+					/>
+					<GameTypeCard
+						name={t("Kuro Games")}
 						logo={KuroLogo}
 						invertLogoColor
 						onClick={() => setOpenKuroModal(true)}
@@ -80,8 +89,16 @@ export default function NewGameModal({
 				</div>
 			</div>
 
-			<NewKuroGameModal show={openKuroModal} setShow={setOpenKuroModal} openTrueNew={handleOpenTrueNewModal}/>
-			<NewMihoyoGameModal show={openMihoyoModal} setShow={setOpenMihoyoModal} openTrueNew={handleOpenTrueNewModal}/>
+			<NewKuroGameModal
+				show={openKuroModal}
+				setShow={setOpenKuroModal}
+				openTrueNew={handleOpenTrueNewModal}
+			/>
+			<NewMihoyoGameModal
+				show={openMihoyoModal}
+				setShow={setOpenMihoyoModal}
+				openTrueNew={handleOpenTrueNewModal}
+			/>
 
 			<TrueNewGameModal
 				show={openTrueNewModal}

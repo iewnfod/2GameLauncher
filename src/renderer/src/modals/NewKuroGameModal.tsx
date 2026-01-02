@@ -5,6 +5,7 @@ import { GameTypeCard } from "@renderer/modals/NewGameModal";
 import { GameData } from "@renderer/lib/games";
 import wwBg from "@renderer/assets/ww-bg.png";
 import wwLogo from "@renderer/assets/ww.png";
+import { useI18n } from "@renderer/components/i18n";
 
 const kuroGames: {
 	name: string;
@@ -12,11 +13,11 @@ const kuroGames: {
 	addData?: Partial<GameData>;
 }[] = [
 	{
-		name: "战双帕弥什",
+		name: "games.Punishing Gray Raven",
 		icon: punishingIcon,
 	},
 	{
-		name: "鸣潮",
+		name: "games.Wuthering Waves",
 		icon: wwIcon,
 		addData: {
 			logoSize: 50,
@@ -39,6 +40,8 @@ export default function NewKuroGameModal({
 	setShow: (show: boolean) => void;
 	openTrueNew: (name: string, logo: string, addData?: Partial<GameData>) => void;
 }) {
+	const {t} = useI18n();
+
 	const handleClose = () => {
 		setShow(false);
 	};
@@ -76,10 +79,14 @@ export default function NewKuroGameModal({
 					{kuroGames.map((game, index) => (
 						<GameTypeCard
 							key={index}
-							name={game.name}
+							name={t(game.name)}
 							logo={game.icon}
 							onClick={() =>
-								openTrueNew(game.name, game.icon, game.addData)
+								openTrueNew(
+									t(game.name),
+									game.icon,
+									game.addData,
+								)
 							}
 						/>
 					))}

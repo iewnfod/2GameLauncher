@@ -1,5 +1,5 @@
 <h1 align="center">2GameLauncher</h1>
-<p align="center">从一个地方组织和启动所有游戏</p>
+<p align="center">在单个应用中管理和启动你的所有游戏</p>
 <p align="center">
 中文 | <a href="./README.md">English</a>
 </p>

@@ -7,6 +7,7 @@ import zzzIcon from "../assets/zzz-icon.png";
 import { GameData } from "@renderer/lib/games";
 import zzzBg from "../assets/zzz-bg.png";
 import zzzLogo from "../assets/zzz.svg";
+import { useI18n } from "@renderer/components/i18n";
 
 const mihoyoGames: {
 	name: string;
@@ -14,19 +15,19 @@ const mihoyoGames: {
 	addData?: Partial<GameData>;
 }[] = [
 	{
-		name: "崩坏3",
+		name: "games.Honkai Impact 3rd",
 		icon: bh3Icon,
 	},
 	{
-		name: "原神",
+		name: "games.Genshin Impact",
 		icon: giIcon,
 	},
 	{
-		name: "崩坏：星穷铁道",
+		name: "games.Honkai: Star Rail",
 		icon: hksrIcon,
 	},
 	{
-		name: "绝区零",
+		name: "games.Zenless Zone Zero",
 		icon: zzzIcon,
 		addData: {
 			logo: zzzLogo,
@@ -47,6 +48,8 @@ export default function NewMihoyoGameModal({
 	setShow: (show: boolean) => void;
 	openTrueNew: (name: string, logo: string, addData?: Partial<GameData>) => void;
 }) {
+	const {t} = useI18n();
+
 	const handleClose = () => {
 		setShow(false);
 	};
@@ -84,10 +87,14 @@ export default function NewMihoyoGameModal({
 					{mihoyoGames.map((game, index) => (
 						<GameTypeCard
 							key={index}
-							name={game.name}
+							name={t(game.name)}
 							logo={game.icon}
 							onClick={() =>
-								openTrueNew(game.name, game.icon, game.addData)
+								openTrueNew(
+									t(game.name),
+									game.icon,
+									game.addData,
+								)
 							}
 						/>
 					))}

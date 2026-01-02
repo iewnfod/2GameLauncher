@@ -1,4 +1,5 @@
 import { Game } from "@renderer/lib/games";
+import { useI18n } from "@renderer/components/i18n";
 
 export default function DeleteGameModal({
 	show,
@@ -11,6 +12,8 @@ export default function DeleteGameModal({
 	game: Game;
 	onDelete: () => void;
 }) {
+	const {t} = useI18n();
+
 	const handleClose = () => {
 		setShow(false);
 	};
@@ -45,10 +48,13 @@ export default function DeleteGameModal({
 						: "opacity-0 scale-95 translate-y-4"
 				}`}
 			>
-				<h3 className="text-lg text-gray-400">Deleting {game.name}</h3>
+				<h3 className="text-lg text-gray-400">
+					{t("Deleting")} {game.name}
+				</h3>
 				<p className="text-md pt-5">
-					Make sure you want to delete it and this action is not
-					invertible.
+					{t(
+						"Make sure you want to delete it and this action is not invertible",
+					)}
 				</p>
 				<div className="border-t-2 border-gray-700/50 h-0 w-full rounded-lg mt-6" />
 				<div className="flex justify-end space-x-3 pt-6">
@@ -59,13 +65,13 @@ export default function DeleteGameModal({
 						}}
 						className="cursor-pointer px-4 py-2 bg-[#FFFFFF] text-gray-900 hover:bg-gray-200 rounded-xl transition-colors ease-linear duration-150"
 					>
-						Cancel
+						{t('Cancel')}
 					</button>
 					<button
 						onClick={handleDelete}
 						className="cursor-pointer px-4 py-2 border-2 border-red-700 bg-red-950 hover:bg-red-800 rounded-xl transition-colors ease-linear duration-150"
 					>
-						Delete
+						{t('Delete')}
 					</button>
 				</div>
 			</div>

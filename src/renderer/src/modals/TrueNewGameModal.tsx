@@ -1,7 +1,8 @@
-import { useState } from "react";
-import { SquareMousePointer } from "lucide-react";
+import { useCallback, useState } from "react";
+import { CircleAlert, SquareMousePointer } from "lucide-react";
 import { Game, GameData } from "@renderer/lib/games";
 import { v1 as uuidv1 } from "uuid";
+import { useI18n } from "@renderer/components/i18n";
 
 export default function TrueNewGameModal(
 	{show, setShow, gameName, gameLogo, gamePath, newGame, additionalGameData} : {
@@ -14,11 +15,15 @@ export default function TrueNewGameModal(
 		additionalGameData: Partial<GameData>;
 	}
 ) {
+	const {t} = useI18n();
+
 	const [innerGamePath, setInnerGamePath] = useState<string>(gamePath ?? "");
 	const [params, setParams] = useState<string>("");
+	const [showGamePathError, setShowGamePathError] = useState(false);
 
 	const handleClose = () => {
 		setShow(false);
+		setShowGamePathError(false);
 		setInnerGamePath("");
 		setParams("");
 	};
@@ -33,7 +38,12 @@ export default function TrueNewGameModal(
 		});
 	}
 
-	const handleNewGame = () => {
+	const handleNewGame = useCallback(() => {
+		if (!innerGamePath) {
+			setShowGamePathError(true);
+			return;
+		}
+
 		newGame({
 			id: uuidv1(),
 			icon: gameLogo,
@@ -46,7 +56,7 @@ export default function TrueNewGameModal(
 			},
 		});
 		handleClose();
-	};
+	}, [innerGamePath]);
 
 	return (
 		<div
@@ -73,7 +83,7 @@ export default function TrueNewGameModal(
 						: "opacity-0 scale-95 translate-y-4"
 				}`}
 			>
-				<div className="flex flex-row items-baseline justify-between space-x-3 select-none">
+				<div className="flex flex-row items-center justify-start space-x-3 select-none">
 					<img alt="" src={gameLogo} className="h-10 rounded-lg" />
 					<h3 className="text-xl text-gray-400">{gameName}</h3>
 				</div>
@@ -84,7 +94,7 @@ export default function TrueNewGameModal(
 							htmlFor="game-path-input"
 							className="block text-sm/6 font-medium text-gray-400"
 						>
-							Game Path
+							{t("Game Path")} *
 						</label>
 						<div className="mt-2">
 							<div className="flex items-center rounded-lg bg-gray-700 pl-2">
@@ -106,6 +116,14 @@ export default function TrueNewGameModal(
 								</button>
 							</div>
 						</div>
+						{
+							!innerGamePath && showGamePathError && (
+								<div className="flex flex-row items-center justify-start space-x-1 mt-1 select-none">
+									<CircleAlert className="stroke-red-500/75 translate-y-px" size={16}/>
+									<p className="text-red-500/75 text-sm">{t('Game Path')} {t('should not be empty')}</p>
+								</div>
+							)
+						}
 					</div>
 
 					<div>
@@ -113,7 +131,7 @@ export default function TrueNewGameModal(
 							htmlFor="game-params"
 							className="block text-sm/6 font-medium text-gray-400"
 						>
-							Game Params
+							{t("Game Parameters")}
 						</label>
 						<div className="mt-2">
 							<div className="flex items-center rounded-lg bg-gray-700 pl-2">
@@ -136,13 +154,13 @@ export default function TrueNewGameModal(
 						onClick={handleClose}
 						className="cursor-pointer px-4 py-2 border-2 border-red-700 hover:bg-red-900 rounded-xl transition-colors ease-linear duration-150"
 					>
-						Cancel
+						{t("Cancel")}
 					</button>
 					<button
 						onClick={handleNewGame}
 						className="cursor-pointer px-4 py-2 bg-[#FFFFFF] text-gray-900 hover:bg-gray-200 rounded-xl transition-colors ease-linear duration-150"
 					>
-						Submit
+						{t("Submit")}
 					</button>
 				</div>
 			</div>
