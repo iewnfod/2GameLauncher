@@ -1,7 +1,7 @@
 import SideBar from "./components/SideBar";
 import GamePage from "./components/GamePage";
 import {useCallback, useEffect, useState} from "react";
-import {Game, GameData } from "./lib/games";
+import {Game, GameData} from "./lib/games";
 import HeadLine from "@renderer/components/HeadLine";
 import WelcomePage from "@renderer/components/WelcomePage";
 import NewGameModal from "@renderer/modals/NewGameModal";

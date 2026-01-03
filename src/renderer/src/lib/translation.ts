@@ -22,6 +22,8 @@ export const translations = {
 		"Make sure you want to delete it and this action is not invertible": "确认你想要删除它，这个操作是不可逆的",
 		"Language": "语言",
 		"Details": "详情",
+		"Close": "关闭",
+		"Minimize": "最小化",
 		games: {
 			"Honkai Impact 3rd": "崩坏3",
 			"Genshin Impact": "原神",
