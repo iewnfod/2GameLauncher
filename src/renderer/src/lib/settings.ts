@@ -1,7 +1,13 @@
 export interface Settings {
-	langauge?: string;
+	language?: string;
+	steamGridDBApiKey?: string;
+	steamApiKey?: string;
+	steamId?: string;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
-	langauge: 'en'
+	language: 'en',
+	steamGridDBApiKey: '',
+	steamApiKey: '',
+	steamId: '',
 };

@@ -6,20 +6,14 @@ import HeadLine from "@renderer/components/HeadLine";
 import WelcomePage from "@renderer/components/WelcomePage";
 import NewGameModal from "@renderer/modals/NewGameModal";
 import SettingsModal from "@renderer/modals/SettingsModal";
-import { DEFAULT_SETTINGS, Settings } from "@renderer/lib/settings";
-import { useI18n } from "@renderer/components/i18n";
-import { translations } from "@renderer/lib/translation";
 
 function App() {
-	const {changeLanguage} = useI18n();
 	const [gamesData, setGamesData] = useState<Game[]>([]);
 	const [currentGame, setCurrentGame] = useState<Game | null>(null);
 	const [selectedGameId, setSelectedGameId] = useState<string | null>(null);
 	const [showNewGameModal, setShowNewGameModal] = useState(false);
 	const [isGameDataLoaded, setIsGameDataLoaded] = useState<boolean>(false);
 	const [showSettingsModal, setShowSettingsModal] = useState<boolean>(false);
-	const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
-	const [isSettingsLoaded, setIsSettingsLoaded] = useState(false);
 
 	const handleSelectGame = useCallback(
 		(gameId: string) => {
@@ -101,19 +95,6 @@ function App() {
 				console.error(e);
 				setIsGameDataLoaded(true);
 			});
-
-		window.store
-			.get("settings")
-			.then((data: string) => {
-				if (data) {
-					setSettings(JSON.parse(data) ?? settings);
-				}
-				setIsSettingsLoaded(true);
-			})
-			.catch((e) => {
-				console.error(e);
-				setIsSettingsLoaded(true);
-			});
 	}, []);
 
 	useEffect(() => {
@@ -127,17 +108,6 @@ function App() {
 			window.store.set("games", JSON.stringify(gamesData));
 		}
 	}, [gamesData, isGameDataLoaded]);
-
-	useEffect(() => {
-		if (isSettingsLoaded) {
-			console.log("save settings");
-			if (settings.langauge && Object.keys(translations).includes(settings.langauge)) {
-				// @ts-ignore settings.language must be key of translations
-				changeLanguage(settings.langauge);
-			}
-			window.store.set("settings", JSON.stringify(settings));
-		}
-	}, [settings, isSettingsLoaded]);
 
 	const handleOpenNewGameModal = () => {
 		setShowNewGameModal(true);
@@ -178,15 +148,6 @@ function App() {
 			} else {
 				return prevState;
 			}
-		});
-	};
-
-	const handleUpdateSettings = (changes: Partial<Settings>) => {
-		setSettings(prevState => {
-			return {
-				...prevState,
-				...changes
-			};
 		});
 	};
 
@@ -231,12 +192,14 @@ function App() {
 					/>
 				)}
 			</div>
-			<NewGameModal show={showNewGameModal} setShow={setShowNewGameModal} onNewGame={handleNewGame}/>
+			<NewGameModal
+				show={showNewGameModal}
+				setShow={setShowNewGameModal}
+				onNewGame={handleNewGame}
+			/>
 			<SettingsModal
 				show={showSettingsModal}
 				setShow={setShowSettingsModal}
-				settings={settings}
-				updateSettings={handleUpdateSettings}
 			/>
 		</div>
 	);

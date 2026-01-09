@@ -1,5 +1,5 @@
 import { Minus, X } from "lucide-react";
-import { useI18n } from "@renderer/components/i18n";
+import { useI18n } from "@renderer/providers/i18n";
 
 export default function HeadLine() {
 	const {t} = useI18n();

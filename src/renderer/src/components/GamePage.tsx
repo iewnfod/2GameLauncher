@@ -1,9 +1,9 @@
 import { BookSearch, Play, Settings2, Trash } from "lucide-react";
 import { Game, GameData } from "@renderer/lib/games";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import DeleteGameModal from "@renderer/modals/DeleteGameModal";
 import { formatDuration } from "@renderer/lib/utils";
-import { useI18n } from "@renderer/components/i18n";
+import { useI18n } from "@renderer/providers/i18n";
 import GameDetailsModal from "@renderer/modals/GameDetailsModal";
 
 export default function GamePage({ game, onDelete, updateGameData }: {
@@ -14,10 +14,22 @@ export default function GamePage({ game, onDelete, updateGameData }: {
 	const [showDeleteGameModal, setShowDeleteGameModal] = useState(false);
 	const [showDetailsModal, setShowDetailsModal] = useState(false);
 	const {t} = useI18n();
+	const isSteam = useMemo(
+		() => game.data.type === "steam",
+		[game],
+	);
 
 	const handleLaunch = () => {
 		console.log(`Trying to launch game ${game.id}`);
-		window.api.launchGame(game.id, game.data.gamePath, game.data.gameParams);
+		if (isSteam) {
+			window.api.launchSteamGame(game.id, game.data.steamAppId!, game.data.gameParams);
+		} else {
+			window.api.launchGame(
+				game.id,
+				game.data.gamePath,
+				game.data.gameParams,
+			);
+		}
 		updateGameData(game.id, {
 			lastOpen: Date.now(),
 		});
@@ -41,21 +53,25 @@ export default function GamePage({ game, onDelete, updateGameData }: {
 			className="relative w-full h-full flex flex-col justify-between items-center"
 			onClick={handleHideSettings}
 		>
-			<div
-				className="absolute top-0 z-10 flex w-full p-12 flex-row"
-				style={{
-					padding: game.data.logoPosition,
-					flexDirection:
-						game.data.logoPlace === "right" ? "row-reverse" : "row",
-				}}
-			>
-				<img
-					alt={game.name}
-					src={game.data.logo ?? game.icon}
-					width={game.data.logoSize}
-					className="max-w-44 select-none"
-				/>
-			</div>
+			{!game.data.noLogo && (
+				<div
+					className="absolute top-0 z-10 flex w-full p-12 flex-row"
+					style={{
+						padding: game.data.logoPosition,
+						flexDirection:
+							game.data.logoPlace === "right"
+								? "row-reverse"
+								: "row",
+					}}
+				>
+					<img
+						alt={game.name}
+						src={game.data.logo ?? game.icon}
+						width={game.data.logoSize}
+						className="max-w-44 select-none"
+					/>
+				</div>
+			)}
 
 			<div className="absolute bottom-0 z-10 flex flex-row justify-end items-center w-full pr-20 gap-5">
 				<button

@@ -1,35 +1,38 @@
-import { Language, useI18n } from "@renderer/components/i18n";
-import { Settings } from "@renderer/lib/settings";
-import { LANGUAGE_NAMES } from "@renderer/lib/translation";
-import { useCallback, useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { useI18n } from "@renderer/providers/i18n";
+import { ReactNode, useState } from "react";
+import { SettingsIcon } from "lucide-react";
+import GeneralSettings from "@renderer/components/settings/GeneralSettings";
+import SteamSettings from "@renderer/components/settings/SteamSettings";
+import SteamIcon from "@renderer/assets/SteamIcon";
+
+export interface SettingsPage {
+	name: string;
+	icon: ReactNode;
+}
 
 export default function SettingsModal({
 	show,
 	setShow,
-	settings,
-	updateSettings,
 }: {
 	show: boolean;
 	setShow: (show: boolean) => void;
-	settings: Settings;
-	updateSettings: (changes: Partial<Settings>) => void;
 }) {
-	const { t, availableLanguages, language, changeLanguage } = useI18n();
-	const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
+	const { t } = useI18n();
+	const settingsPages: SettingsPage[] = [
+		{
+			name: "General",
+			icon: <SettingsIcon size={18}/>,
+		},
+		{
+			name: "Steam",
+			icon: <SteamIcon size={18}/>,
+		}
+	];
+	const [currentPage, setCurrentPage] = useState<SettingsPage>(settingsPages[0]);
 
 	const handleClose = () => {
 		setShow(false);
-		setIsLanguageDropdownOpen(false);
 	};
-
-	const handleSelectLanguage = useCallback((l: Language) => {
-		if (l !== language) {
-			updateSettings({ langauge: l });
-			changeLanguage(l);
-		}
-		setIsLanguageDropdownOpen(false);
-	}, [language]);
 
 	return (
 		<div
@@ -50,7 +53,7 @@ export default function SettingsModal({
 			/>
 
 			<div
-				className={`relative select-none rounded-3xl bg-[#1E2939] text-[#FFFFFF] p-5 w-96 shadow-2xl transition-all duration-300 transform ${
+				className={`relative select-none rounded-3xl bg-[#1E2939] text-[#FFFFFF] p-5 min-w-[75%] min-h-[75%] shadow-2xl transition-all duration-300 transform ${
 					show
 						? "opacity-100 scale-100 translate-y-0"
 						: "opacity-0 scale-95 translate-y-4"
@@ -58,51 +61,40 @@ export default function SettingsModal({
 			>
 				<h3 className="text-lg text-gray-400">{t("Settings")}</h3>
 
-				<div className="border-t-2 border-gray-700/50 h-0 w-full rounded-lg mt-3 mb-3" />
+				<div className="border-t-2 border-gray-700/50 h-0 w-full rounded-lg my-3" />
 
-				<div className="flex flex-row items-center justify-between space-x-1 mt-5 select-none">
-					<p className="text-md">{t("Language")}</p>
-
-					<div className="relative">
+				<div className="flex flex-row w-full justify-between items-start mt-5">
+					<div className="flex flex-col justify-start items-center h-full w-36 gap-y-1">
+						{settingsPages.map((s: SettingsPage, index) => (
+							<div
+								key={index}
+								className={`
+									w-full py-1.5 px-2.5 flex justify-start items-center
+									text-gray-400 rounded-xl gap-x-1.5 cursor-pointer
+									group hover:bg-gray-700 transition-all duration-300
+									${s.name === currentPage.name ? "bg-gray-700" : ""}
+								`}
+								onClick={() => setCurrentPage(s)}
+							>
+								<div className="text-gray-400">{s.icon}</div>
+								<p>{t(s.name)}</p>
+							</div>
+						))}
+					</div>
+					<div className="h-full grow px-5">
 						<div
-							className="px-3 py-2.5 text-heading text-sm rounded-lg bg-gray-700/50 cursor-pointer hover:bg-gray-600/50 transition-colors duration-150 ease-linear flex items-center justify-between min-w-35"
-							onClick={() =>
-								setIsLanguageDropdownOpen(
-									!isLanguageDropdownOpen,
-								)
+							className={
+								currentPage.name === "General" ? "" : "hidden"
 							}
 						>
-							<span>
-								{LANGUAGE_NAMES[settings.langauge || language] || settings.langauge || language}
-							</span>
-							<ChevronDown
-								size={18}
-								className={`transition duration-200 ${isLanguageDropdownOpen ? "rotate-180" : "rotate-0"}`}
-							/>
+							<GeneralSettings/>
 						</div>
-
 						<div
-							className={`absolute top-full left-0 right-0 mt-1 bg-gray-900/50 backdrop-blur-sm rounded-lg shadow-xl z-50 overflow-hidden transition-all duration-200 origin-top ${
-								isLanguageDropdownOpen
-									? "opacity-100 scale-y-100 translate-y-0"
-									: "opacity-0 scale-y-95 -translate-y-2 pointer-events-none"
-							}`}
+							className={
+								currentPage.name === "Steam" ? "" : "hidden"
+							}
 						>
-							<div className="p-1 max-h-60 overflow-y-auto custom-scrollbar">
-								{availableLanguages.map((l) => (
-									<div
-										key={l}
-										className={`px-3 py-1.5 m-1 cursor-pointer transition-all ease-linear duration-150 hover:bg-gray-700 mx-1 rounded-md text-gray-300 ${
-											l === language
-												? "bg-gray-700/50 font-medium"
-												: "hover:text-white"
-										}`}
-										onClick={() => handleSelectLanguage(l)}
-									>
-										{LANGUAGE_NAMES[l] || l}
-									</div>
-								))}
-							</div>
+							<SteamSettings/>
 						</div>
 					</div>
 				</div>

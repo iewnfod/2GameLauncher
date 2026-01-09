@@ -1,6 +1,6 @@
 import {Bolt, Grid2X2Plus} from "lucide-react";
 import {Game} from "../lib/games";
-import { useI18n } from "@renderer/components/i18n";
+import { useI18n } from "@renderer/providers/i18n";
 
 export interface SideBarProps {
 	games: Game[];

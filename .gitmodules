@@ -1,0 +1,3 @@
+[submodule "src/main/lib/steamgriddb"]
+	path = src/main/lib/steamgriddb
+	url = https://github.com/iewnfod/node-steamgriddb

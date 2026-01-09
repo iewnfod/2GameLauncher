@@ -1,7 +1,7 @@
 import { Grid2X2Plus } from "lucide-react";
 import { Game } from "@renderer/lib/games";
 import { useMemo } from "react";
-import { useI18n } from "@renderer/components/i18n";
+import { useI18n } from "@renderer/providers/i18n";
 
 export default function WelcomePage({
 	openNewGameModal,
@@ -66,9 +66,10 @@ export default function WelcomePage({
 								className={`
 									border-transparent cursor-pointer
 									transition-all ease-linear duration-150
-									border-2 hover:border-[#3E3D3D] rounded-2xl p-1.5
+									border-2 hover:border-[#3E3D3D] rounded-2xl p-[.3rem]
 								`}
 								onClick={() => handleSelectGame(game.id)}
+								key={game.id}
 							>
 								<img
 									alt=""

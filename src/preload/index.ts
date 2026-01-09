@@ -12,15 +12,32 @@ const api = {
 	close: () => ipcRenderer.invoke("close"),
 	selectFile: (filters: { name: string; extensions: string[] }[]) =>
 		ipcRenderer.invoke("selectFile", { filters }),
-	showFileInFolder: (filePath: string) => ipcRenderer.invoke("showFileInFolder", { filePath }),
+	showFileInFolder: (filePath: string) =>
+		ipcRenderer.invoke("showFileInFolder", { filePath }),
 	getFileName: (filePath: string) => path.basename(filePath),
-	launchGame: (gameId: string, gamePath: string, gameParams?: string) => ipcRenderer.invoke("launchGame", { gameId, gamePath, gameParams }),
+	launchGame: (gameId: string, gamePath: string, gameParams?: string) =>
+		ipcRenderer.invoke("launchGame", { gameId, gamePath, gameParams }),
 	onGameExit: (
-		callback: (args: { gameId: string, code: number | null }) => void,
+		callback: (args: { gameId: string; code: number | null }) => void,
 	) => ipcRenderer.on("game-exit", (_event, value) => callback(value)),
 	onGameLaunchError: (
-		callback: (args: { gameId: string, msg: string }) => void,
-	) => ipcRenderer.on("game-launch-error", (_event, value) => callback(value)),
+		callback: (args: { gameId: string; msg: string }) => void,
+	) =>
+		ipcRenderer.on("game-launch-error", (_event, value) => callback(value)),
+	getAllSteamGames: () => ipcRenderer.invoke("getAllSteamGames"),
+	getFileIcon: (filePath: string) =>
+		ipcRenderer.invoke("getFileIcon", { filePath }),
+	openExternal: (url: string) => ipcRenderer.invoke("openExternal", { url }),
+	steam: {
+		getSGDBHeroes: (appId: string) =>
+			ipcRenderer.invoke("getSGDBHeroes", { appId }),
+		getSGDBIcons: (appId: string) =>
+			ipcRenderer.invoke("getSGDBIcons", { appId }),
+		getIcons: (steamId: string, appIds?: string[]) =>
+			ipcRenderer.invoke("getSteamAppIcons", { steamId, appIds }),
+	},
+	launchSteamGame: (gameId: string, steamAppId: string, gameParams?: string) =>
+		ipcRenderer.invoke("launchSteamGame", { gameId, steamAppId, gameParams }),
 };
 
 const storeAPI = {

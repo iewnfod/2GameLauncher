@@ -6,6 +6,7 @@ export interface Game {
 }
 
 export interface GameData {
+	type?: "steam" | "mihoyo" | "kuro";
 	bg?: string;
 	bgType?: "image" | "video";
 	logo?: string;
@@ -19,4 +20,15 @@ export interface GameData {
 	lastOpen?: number;
 	autoFetchBg?: boolean;
 	lastFetchBg?: number;
+	noLogo?: boolean;
+	steamAppId?: string;
+}
+
+export interface SteamGame {
+	appId: string;
+	name?: string | undefined;
+	installDir?: string | undefined;
+	sizeOnDisk?: number | undefined;
+	isInstalled: boolean;
+	lastUpdated?: Date | undefined;
 }

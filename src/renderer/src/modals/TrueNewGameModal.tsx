@@ -1,8 +1,8 @@
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { CircleAlert, SquareMousePointer } from "lucide-react";
 import { Game, GameData } from "@renderer/lib/games";
 import { v1 as uuidv1 } from "uuid";
-import { useI18n } from "@renderer/components/i18n";
+import { useI18n } from "@renderer/providers/i18n";
 
 export default function TrueNewGameModal(
 	{show, setShow, gameName, gameLogo, gamePath, newGame, additionalGameData} : {
@@ -20,6 +20,8 @@ export default function TrueNewGameModal(
 	const [innerGamePath, setInnerGamePath] = useState<string>(gamePath ?? "");
 	const [params, setParams] = useState<string>("");
 	const [showGamePathError, setShowGamePathError] = useState(false);
+
+	const isSteam = useMemo(() => additionalGameData.type === "steam", [additionalGameData]);
 
 	const handleClose = () => {
 		setShow(false);
@@ -39,7 +41,7 @@ export default function TrueNewGameModal(
 	};
 
 	const handleNewGame = useCallback(() => {
-		if (!innerGamePath) {
+		if (!isSteam && !innerGamePath) {
 			setShowGamePathError(true);
 			return;
 		}
@@ -55,8 +57,15 @@ export default function TrueNewGameModal(
 				...additionalGameData,
 			},
 		});
+
 		handleClose();
-	}, [innerGamePath]);
+	}, [innerGamePath, isSteam, gameLogo, gameName, params, additionalGameData]);
+
+	const writeSteamIdToClipboard = () => {
+		if (additionalGameData.steamAppId) {
+			navigator.clipboard.writeText(additionalGameData.steamAppId);
+		}
+	};
 
 	return (
 		<div
@@ -84,12 +93,25 @@ export default function TrueNewGameModal(
 				}`}
 			>
 				<div className="flex flex-row items-center justify-start space-x-3 select-none">
-					<img alt="" src={gameLogo} className="h-10 rounded-lg" />
-					<h3 className="text-xl text-gray-400">{gameName}</h3>
+					<img
+						alt=""
+						src={gameLogo}
+						className="h-10 rounded-lg"
+						onDoubleClick={writeSteamIdToClipboard}
+					/>
+					<div className="flex flex-row group relative">
+						<h3 className="text-xl text-gray-400">{gameName}</h3>
+						{additionalGameData.steamAppId && (
+							<div className="absolute text-gray-700 left-full top-1/2 -translate-y-1/2 ml-3 px-3 py-2 bg-[#E0E0E0] text-sm font-medium rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-150 whitespace-nowrap pointer-events-none z-10 group-hover:delay-[10s] select-none">
+								{additionalGameData.steamAppId}
+								<div className="absolute -left-2 top-1/2 -translate-y-1/2 w-0 h-0 border-t-8 border-b-8 border-r-8 border-t-transparent border-b-transparent border-r-[#E0E0E0]"></div>
+							</div>
+						)}
+					</div>
 				</div>
 
 				<div className="flex flex-col w-full pt-5 pb-5 space-y-5">
-					<div>
+					<div className={isSteam ? "cursor-not-allowed" : ""}>
 						<label
 							htmlFor="game-path-input"
 							className="block text-sm/6 font-medium text-gray-400"
@@ -102,28 +124,32 @@ export default function TrueNewGameModal(
 									id="game-path-input"
 									className="select-none h-9 overflow-hidden whitespace-nowrap text-ellipsis grow py-1.5 pr-3 pl-1 text-base text-gray-400 focus:outline-none sm:text-sm/6"
 								>
-									{innerGamePath}
+									{isSteam ? t("Steam") : innerGamePath}
 								</div>
 								<button
-									className="pr-2 cursor-pointer group"
+									className={`pr-2 group ${isSteam ? "cursor-not-allowed" : "cursor-pointer"}`}
 									onClick={handleSelectGamePath}
+									disabled={isSteam}
 								>
 									<SquareMousePointer
 										color="#A7A7A7"
 										size={20}
-										className="group-hover:stroke-[#FFFFFF] transition-all duration-150 ease-linear"
+										className={`${isSteam ? "" : "group-hover:stroke-[#FFFFFF]"} transition-all duration-150 ease-linear`}
 									/>
 								</button>
 							</div>
 						</div>
-						{
-							!innerGamePath && showGamePathError && (
-								<div className="flex flex-row items-center justify-start space-x-1 mt-1 select-none">
-									<CircleAlert className="stroke-red-500/75 translate-y-px" size={16}/>
-									<p className="text-red-500/75 text-sm">{t('Game Path')} {t('should not be empty')}</p>
-								</div>
-							)
-						}
+						{!innerGamePath && showGamePathError && (
+							<div className="flex flex-row items-center justify-start space-x-1 mt-1 select-none">
+								<CircleAlert
+									className="stroke-red-500/75 translate-y-px"
+									size={16}
+								/>
+								<p className="text-red-500/75 text-sm">
+									{t("Game Path")} {t("should not be empty")}
+								</p>
+							</div>
+						)}
 					</div>
 
 					<div>

@@ -2,9 +2,11 @@ import { app, shell, BrowserWindow, ipcMain } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { loadStoreEvent } from "./store";
-import { loadLaunchGameEvents } from "./launch";
+import { loadStoreEvents } from "./store";
+import { loadGameEvents } from "./game";
 import { loadFileEvents } from "./file";
+import { loadSGDBEvents } from "./sgdb";
+import { loadSteamEvents } from "./steam";
 
 function createWindow(): void {
 	const mainWindow = new BrowserWindow({
@@ -71,7 +73,7 @@ function createWindow(): void {
 		mainWindow.close();
 	});
 
-	loadLaunchGameEvents(mainWindow);
+	loadGameEvents(mainWindow);
 }
 
 app.whenReady().then(() => {
@@ -83,7 +85,11 @@ app.whenReady().then(() => {
 
 	loadFileEvents();
 
-	loadStoreEvent();
+	loadStoreEvents();
+
+	loadSGDBEvents();
+
+	loadSteamEvents();
 
 	createWindow();
 

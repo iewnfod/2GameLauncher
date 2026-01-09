@@ -1,9 +1,8 @@
 import isDev from "electron-is-dev";
-
-const Store = require("electron-store").default;
 import { ipcMain } from "electron";
+import { Conf } from "electron-conf";
 
-const store = new Store();
+const store = new Conf();
 
 function getKey(key: string) {
 	if (isDev) {
@@ -17,8 +16,8 @@ export function storeSet(key: string, value: any) {
 	store.set(getKey(key), value);
 }
 
-export async function storeGet(key: string) {
-	return await store.get(getKey(key));
+export function storeGet(key: string) {
+	return store.get(getKey(key));
 }
 
 export function storeDelete(key: string) {
@@ -29,7 +28,7 @@ export function storeHas(key: string) {
 	return store.has(getKey(key));
 }
 
-export function loadStoreEvent() {
+export function loadStoreEvents() {
 	ipcMain.handle("store-set", (_e, key, value) => {
 		return storeSet(key, value);
 	});

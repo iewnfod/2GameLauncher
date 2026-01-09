@@ -1,6 +1,6 @@
 import { SquareMousePointer } from "lucide-react";
 import { Game, GameData } from "@renderer/lib/games";
-import { useI18n } from "@renderer/components/i18n";
+import { useI18n } from "@renderer/providers/i18n";
 
 export default function GameDetailsModal({
 	show,

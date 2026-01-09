@@ -1,5 +1,4 @@
 import MihoyoLogo from "../assets/mihoyo.png";
-import { GameTypeCard } from "@renderer/modals/NewGameModal";
 import bh3Icon from "../assets/bh3.png";
 import hksrIcon from "../assets/hksr.png";
 import giIcon from "../assets/gi-icon.png";
@@ -7,7 +6,8 @@ import zzzIcon from "../assets/zzz-icon.png";
 import { GameData } from "@renderer/lib/games";
 import zzzBg from "../assets/zzz-bg.png";
 import zzzLogo from "../assets/zzz.svg";
-import { useI18n } from "@renderer/components/i18n";
+import { useI18n } from "@renderer/providers/i18n";
+import GameHorizontalCard from "@renderer/components/GameHorizontalCard";
 
 const mihoyoGames: {
 	name: string;
@@ -81,11 +81,11 @@ export default function NewMihoyoGameModal({
 			>
 				<div className="flex flex-row items-baseline justify-between space-x-3 select-none">
 					<img alt="" src={MihoyoLogo} className="h-10" />
-					<h3 className="text-xl text-gray-400">米哈游</h3>
+					<h3 className="text-xl text-gray-400">{t("miHoYo")}</h3>
 				</div>
-				<div className="flex flex-col items-center justify-center max-h-[50vh] min-h-10 pt-5 pb-5 overflow-y-auto">
+				<div className="flex flex-col items-center justify-start max-h-[50vh] min-h-10 pt-5 pb-5 overflow-y-auto">
 					{mihoyoGames.map((game, index) => (
-						<GameTypeCard
+						<GameHorizontalCard
 							key={index}
 							name={t(game.name)}
 							logo={game.icon}
@@ -93,7 +93,7 @@ export default function NewMihoyoGameModal({
 								openTrueNew(
 									t(game.name),
 									game.icon,
-									game.addData,
+									{...game.addData, type: "mihoyo"},
 								)
 							}
 						/>

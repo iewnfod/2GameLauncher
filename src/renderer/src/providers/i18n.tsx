@@ -16,7 +16,7 @@ const I18nContext = createContext<I18nContextType | undefined>(undefined);
 const getNestedValue = (obj: any, path: string): string => {
 	return path.split('.').reduce((current, key) => {
 		return current ? current[key] : undefined;
-	}, obj) || path;
+	}, obj) || obj[path] || path;
 };
 
 interface I18nProviderProps {

@@ -1,5 +1,5 @@
 export const translations = {
-	zh: {
+	"zh-cn": {
 		"Welcome to": "欢迎来到",
 		"Organize and launch all your games from one place":
 			"在单个应用中管理和启动你的所有游戏",
@@ -24,6 +24,10 @@ export const translations = {
 		"Details": "详情",
 		"Close": "关闭",
 		"Minimize": "最小化",
+		"SteamGridDB API Key": "SteamGridDB API 密钥",
+		"You can generate one by clicking here": "你可以通过点击这里生成一个",
+		"Steam API Key": "Steam API 密钥",
+		"General": "通用",
 		games: {
 			"Honkai Impact 3rd": "崩坏3",
 			"Genshin Impact": "原神",
@@ -37,6 +41,6 @@ export const translations = {
 };
 
 export const LANGUAGE_NAMES = {
-	zh: "中文",
+	"zh-cn": "简体中文",
 	en: "English",
-}
+};
