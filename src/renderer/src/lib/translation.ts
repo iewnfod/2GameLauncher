@@ -28,6 +28,7 @@ export const translations = {
 		"You can generate one by clicking here": "你可以通过点击这里生成一个",
 		"Steam API Key": "Steam API 密钥",
 		"General": "通用",
+		"Launch by Steam": "使用 Steam 启动",
 		games: {
 			"Honkai Impact 3rd": "崩坏3",
 			"Genshin Impact": "原神",

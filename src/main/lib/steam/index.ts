@@ -1,7 +1,8 @@
 import { storeGet, storeSet } from "../../store";
-import { SteamOwnedGameReturn } from "../../../types/steam";
+import { SteamAppDetails, SteamOwnedGameReturn } from "../../../types/steam";
 import { downloadImageToBase64 } from "../../file";
 import { CACHE_EXPIRY } from "../../constants";
+import { Settings } from "../../../types/settings";
 
 export class SteamAPI {
 	private readonly apiKey: string;
@@ -79,6 +80,36 @@ export class SteamAPI {
 			} as SteamOwnedGameReturn;
 		}
 	}
+
+	async getAppDetails(appId: string) {
+		const cacheKey = `cache.steam.${appId}.details`;
+		try {
+			const cache = storeGet(cacheKey) as string;
+			const d = JSON.parse(cache);
+			if (d && d.time && d.data) {
+				if (Date.now() - d.time < CACHE_EXPIRY) {
+					return d.data;
+				}
+			}
+		} catch (e) {}
+
+		try {
+			const api = new URL(
+				"https://store.steampowered.com/api/appdetails",
+			);
+			api.searchParams.set("appids", appId);
+			api.searchParams.set("format", "json");
+			api.searchParams.set("l", getLanguage());
+			console.log(api.toString());
+			const res = await fetch(api);
+			const data = (await res.json())[appId].data as SteamAppDetails;
+			storeSet(cacheKey, JSON.stringify({data: data, time: Date.now()}));
+			return data;
+		} catch (e) {
+			console.log("Failed to fetch app details: ", e);
+			return undefined;
+		}
+	}
 }
 
 export function newSteamAPIWithStoredKey() {
@@ -91,4 +122,16 @@ export function newSteamAPIWithStoredKey() {
 	} catch (e) {}
 
 	return null;
+}
+
+function getLanguage() {
+	try {
+		const settingsString = storeGet("settings") as string;
+		const settings = JSON.parse(settingsString) as Settings;
+		if (settings.language) {
+			return settings.language;
+		}
+	} catch (e) {}
+
+	return "en";
 }

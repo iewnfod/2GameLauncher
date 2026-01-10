@@ -2,21 +2,27 @@ import { BookSearch, Play, Settings2, Trash } from "lucide-react";
 import { Game, GameData } from "@renderer/lib/games";
 import { useMemo, useState } from "react";
 import DeleteGameModal from "@renderer/modals/DeleteGameModal";
-import { formatDuration } from "@renderer/lib/utils";
 import { useI18n } from "@renderer/providers/i18n";
 import GameDetailsModal from "@renderer/modals/GameDetailsModal";
+import MultiSrcImg from "@renderer/components/MultiSrcImg";
 
 export default function GamePage({ game, onDelete, updateGameData }: {
 	game: Game, onDelete: (id: string) => void,
+	updateGameName: (id: string, name: string) => void,
 	updateGameData: (id: string, data: Partial<GameData>) => void,
 }) {
 	const [showSettings, setShowSettings] = useState(false);
 	const [showDeleteGameModal, setShowDeleteGameModal] = useState(false);
 	const [showDetailsModal, setShowDetailsModal] = useState(false);
-	const {t} = useI18n();
+
+	const {t, language} = useI18n();
 	const isSteam = useMemo(
 		() => game.data.type === "steam",
 		[game],
+	);
+	const isChinese = useMemo(
+		() => language === "zh-cn",
+		[language]
 	);
 
 	const handleLaunch = () => {
@@ -46,7 +52,7 @@ export default function GamePage({ game, onDelete, updateGameData }: {
 
 	const handleShowDetails = () => {
 		setShowDetailsModal(true);
-	}
+	};
 
 	return (
 		<div
@@ -55,7 +61,7 @@ export default function GamePage({ game, onDelete, updateGameData }: {
 		>
 			{!game.data.noLogo && (
 				<div
-					className="absolute top-0 z-10 flex w-full p-12 flex-row"
+					className={`absolute top-0 z-10 flex w-full flex-row ${isSteam ? "px-12 py-3" : "p-12"}`}
 					style={{
 						padding: game.data.logoPosition,
 						flexDirection:
@@ -64,12 +70,26 @@ export default function GamePage({ game, onDelete, updateGameData }: {
 								: "row",
 					}}
 				>
-					<img
-						alt={game.name}
-						src={game.data.logo ?? game.icon}
-						width={game.data.logoSize}
-						className="max-w-44 select-none"
-					/>
+					{isSteam ? (
+						<MultiSrcImg
+							alt={game.name}
+							width={game.data.logoSize}
+							className="max-w-48 select-none"
+							src={[
+								`https://shared.steamstatic.com/store_item_assets/steam/apps/${game.data.steamAppId}/logo${isChinese ? "_schinese" : ""}_2x.png`,
+								`https://shared.steamstatic.com/store_item_assets/steam/apps/${game.data.steamAppId}/logo_2x.png`,
+								`https://shared.steamstatic.com/store_item_assets/steam/apps/${game.data.steamAppId}/logo${isChinese ? "_schinese" : ""}.png`,
+								`https://shared.steamstatic.com/store_item_assets/steam/apps/${game.data.steamAppId}/logo.png`,
+							]}
+						/>
+					) : (
+						<img
+							alt={game.name}
+							src={game.data.logo ?? game.icon}
+							width={game.data.logoSize}
+							className="max-w-44 select-none"
+						/>
+					)}
 				</div>
 			)}
 
@@ -127,14 +147,9 @@ export default function GamePage({ game, onDelete, updateGameData }: {
 					>
 						<div className="p-3 flex flex-col gap-3 justify-around items-start">
 							<div className="flex flex-row gap-3 justify-between items-center w-full">
-								<h3 className="font-semibold text-lg select-none pl-2 text-[#FFFFFF]">
+								<h3 className="font-semibold text-lg select-none text-ellipsis whitespace-nowrap overflow-hidden px-2 text-[#FFFFFF]">
 									{game.name}
 								</h3>
-								{game.data.playedTime !== undefined ? (
-									<span className="translate-y-1 bg-gray-700/70 rounded-full px-3 py-1 text-sm font-semibold text-gray-400 mr-2 mb-2 select-none">
-										{formatDuration(game.data.playedTime)}
-									</span>
-								) : null}
 							</div>
 
 							<div className="border-t-2 border-gray-500/50 h-0 w-full rounded-lg" />
@@ -163,8 +178,19 @@ export default function GamePage({ game, onDelete, updateGameData }: {
 
 			<div className="absolute top-0 left-0 h-full bg-linear-to-r from-[#030712] to-transparent w-[20%] z-5" />
 
-			<div className="absolute top-0 left-0 w-full h-full">
-				{game.data.bgType === "image" ? (
+			<div className="absolute top-0 left-0 w-full h-full text-center overflow-hidden">
+				{isSteam ? (
+					<div className="w-full h-full flex flex-col justify-center overflow-hidden">
+						<MultiSrcImg
+							alt=""
+							className="h-full w-full object-cover"
+							src={[
+								`https://shared.steamstatic.com/store_item_assets/steam/apps/${game.data.steamAppId!}/library_hero_2x.jpg`,
+								`https://shared.steamstatic.com/store_item_assets/steam/apps/${game.data.steamAppId!}/library_hero.jpg`,
+							]}
+						/>
+					</div>
+				) : game.data.bgType === "image" ? (
 					<img
 						alt=""
 						src={game.data.bg}

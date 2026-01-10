@@ -16,10 +16,25 @@ export async function getSteamAppIcons(steamId: string, appIds?: string[]) {
 	}
 }
 
+export async function getSteamAppDetails(appId: string) {
+	const steam = newSteamAPIWithStoredKey();
+	if (steam) {
+		return await steam.getAppDetails(appId);
+	} else {
+		return undefined;
+	}
+}
+
 export function loadSteamEvents() {
 	ipcMain.handle(
 		"getSteamAppIcons",
 		(_event, args: { steamId: string, appIds: string[] }) =>
 			getSteamAppIcons(args.steamId, args.appIds)
+	);
+
+	ipcMain.handle(
+		"getSteamAppDetails",
+		(_event, args: { appId: string }) =>
+			getSteamAppDetails(args.appId)
 	);
 }

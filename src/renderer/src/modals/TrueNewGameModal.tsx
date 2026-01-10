@@ -124,7 +124,9 @@ export default function TrueNewGameModal(
 									id="game-path-input"
 									className="select-none h-9 overflow-hidden whitespace-nowrap text-ellipsis grow py-1.5 pr-3 pl-1 text-base text-gray-400 focus:outline-none sm:text-sm/6"
 								>
-									{isSteam ? t("Steam") : innerGamePath}
+									{isSteam
+										? t("Launch by Steam")
+										: innerGamePath}
 								</div>
 								<button
 									className={`pr-2 group ${isSteam ? "cursor-not-allowed" : "cursor-pointer"}`}

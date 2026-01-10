@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
-import { DEFAULT_SETTINGS, Settings } from "@renderer/lib/settings";
+import { DEFAULT_SETTINGS, Settings } from "../../../types/settings";
 import { useI18n } from "@renderer/providers/i18n";
 
 const settingsString = await window.store.get("settings");

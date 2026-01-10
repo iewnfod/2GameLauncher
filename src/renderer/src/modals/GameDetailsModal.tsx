@@ -1,6 +1,7 @@
 import { SquareMousePointer } from "lucide-react";
 import { Game, GameData } from "@renderer/lib/games";
 import { useI18n } from "@renderer/providers/i18n";
+import { useMemo } from "react";
 
 export default function GameDetailsModal({
 	show,
@@ -14,6 +15,7 @@ export default function GameDetailsModal({
 	updateGameData: (id: string, data: Partial<GameData>) => void;
 }) {
 	const { t } = useI18n();
+	const isSteam = useMemo(() => game.data.type === "steam", [game]);
 
 	const handleClose = () => {
 		setShow(false);
@@ -53,6 +55,12 @@ export default function GameDetailsModal({
 				onClick={handleClose}
 			/>
 
+			{isSteam && (
+				<div className="absolute bottom-3 right-3 text-gray-400">
+					{game.data.steamAppId}
+				</div>
+			)}
+
 			<div
 				className={`relative rounded-3xl bg-[#1E2939] text-[#FFFFFF] p-5 w-96 shadow-2xl transition-all duration-300 transform ${
 					show
@@ -67,14 +75,16 @@ export default function GameDetailsModal({
 						<p
 							onDoubleClick={handleShowGameInFolder}
 							className="text-sm text-gray-400 cursor-pointer overflow-hidden whitespace-nowrap text-ellipsis"
-						>{window.api.getFileName(game.data.gamePath)}</p>
+						>
+							{window.api.getFileName(game.data.gamePath)}
+						</p>
 					</div>
 				</div>
 
 				<div className="border-t-2 border-gray-700/50 h-0 w-full rounded-lg mt-6" />
 
 				<div className="flex flex-col w-full pt-5 pb-5 space-y-5">
-					<div>
+					<div className={isSteam ? "cursor-not-allowed" : ""}>
 						<label
 							htmlFor="game-path-input"
 							className="block text-sm/6 font-medium text-gray-400"
@@ -87,16 +97,17 @@ export default function GameDetailsModal({
 									id="game-path-input"
 									className="select-none h-9 overflow-hidden whitespace-nowrap text-ellipsis grow py-1.5 pr-3 pl-1 text-base text-gray-400 focus:outline-none sm:text-sm/6"
 								>
-									{game.data.gamePath}
+									{isSteam ? t("Launch by Steam") : game.data.gamePath}
 								</div>
 								<button
-									className="pr-2 cursor-pointer group"
+									className={`pr-2 group ${isSteam ? "cursor-not-allowed" : "cursor-pointer"}`}
 									onClick={handleSelectGamePath}
+									disabled={isSteam}
 								>
 									<SquareMousePointer
 										color="#A7A7A7"
 										size={20}
-										className="group-hover:stroke-[#FFFFFF] transition-all duration-150 ease-linear"
+										className={`${isSteam ? "" : "group-hover:stroke-[#FFFFFF]"} transition-all duration-150 ease-linear`}
 									/>
 								</button>
 							</div>

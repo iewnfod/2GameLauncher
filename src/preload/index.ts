@@ -35,6 +35,8 @@ const api = {
 			ipcRenderer.invoke("getSGDBIcons", { appId }),
 		getIcons: (steamId: string, appIds?: string[]) =>
 			ipcRenderer.invoke("getSteamAppIcons", { steamId, appIds }),
+		getAppDetails: (appId: string) =>
+			ipcRenderer.invoke("getSteamAppDetails", { appId }),
 	},
 	launchSteamGame: (gameId: string, steamAppId: string, gameParams?: string) =>
 		ipcRenderer.invoke("launchSteamGame", { gameId, steamAppId, gameParams }),

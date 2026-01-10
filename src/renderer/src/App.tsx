@@ -167,9 +167,25 @@ function App() {
 		});
 	};
 
+	const handleUpdateGameName = (id: string, name: string) => {
+		setGamesData((prevState) => {
+			const index = prevState.findIndex((g) => g.id === id);
+			if (index !== -1) {
+				const newState = [...prevState];
+				newState[index] = {
+					...newState[index],
+					name
+				};
+				return newState;
+			} else {
+				return prevState;
+			}
+		});
+	}
+
 	return (
 		<div className="w-full h-full flex flex-row items-center justify-between">
-			<HeadLine/>
+			<HeadLine />
 			<SideBar
 				openSettingsModal={handleOpenSettingsModal}
 				openNewGameModal={handleOpenNewGameModal}
@@ -182,6 +198,7 @@ function App() {
 					<GamePage
 						game={currentGame}
 						onDelete={handleDeleteGame}
+						updateGameName={handleUpdateGameName}
 						updateGameData={handleUpdateGameData}
 					/>
 				) : (
