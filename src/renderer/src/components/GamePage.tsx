@@ -132,7 +132,7 @@ export default function GamePage({ game, onDelete, updateGameData }: {
 
 					<div
 						className={`
-							absolute bottom-full right-0 mb-2 min-w-48 bg-[#2A2B2F]
+							absolute bottom-full right-0 mb-2 w-52 bg-[#2A2B2F]
 							rounded-3xl shadow-xl border border-[#3C3C3C] overflow-hidden
 							transition-all duration-200 ease-out origin-bottom
 							${
@@ -147,7 +147,7 @@ export default function GamePage({ game, onDelete, updateGameData }: {
 					>
 						<div className="p-3 flex flex-col gap-3 justify-around items-start">
 							<div className="flex flex-row gap-3 justify-between items-center w-full">
-								<h3 className="font-semibold text-lg select-none text-ellipsis whitespace-nowrap overflow-hidden px-2 text-[#FFFFFF]">
+								<h3 className="font-semibold text-lg select-none text-ellipsis line-clamp-2 overflow-hidden px-2 text-[#FFFFFF]">
 									{game.name}
 								</h3>
 							</div>
@@ -178,12 +178,12 @@ export default function GamePage({ game, onDelete, updateGameData }: {
 
 			<div className="absolute top-0 left-0 h-full bg-linear-to-r from-[#030712] to-transparent w-[20%] z-5" />
 
-			<div className="absolute top-0 left-0 w-full h-full text-center overflow-hidden">
+			<div className="absolute top-0 left-0 w-screen h-full text-center overflow-hidden">
 				{isSteam ? (
 					<div className="w-full h-full flex flex-col justify-center overflow-hidden">
 						<MultiSrcImg
 							alt=""
-							className="h-full w-full object-cover"
+							className="h-full object-cover"
 							src={[
 								`https://shared.steamstatic.com/store_item_assets/steam/apps/${game.data.steamAppId!}/library_hero_2x.jpg`,
 								`https://shared.steamstatic.com/store_item_assets/steam/apps/${game.data.steamAppId!}/library_hero.jpg`,

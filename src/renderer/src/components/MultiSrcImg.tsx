@@ -105,10 +105,12 @@ export const MultiSrcImg: React.FC<MultiSourceImgProps> = ({
 
 	useEffect(() => {
 		if (currentIndex < src.length) {
-			setImgSrc(src[currentIndex]);
-			setIsLoading(true);
+			if (imgSrc !== src[currentIndex]) {
+				setImgSrc(src[currentIndex]);
+				setIsLoading(true);
+			}
 		}
-	}, [currentIndex, src]);
+	}, [currentIndex, src, imgSrc]);
 
 	if (!imgSrc) {
 		return placeholder ? <>{placeholder}</> : null;
